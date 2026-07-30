@@ -16,6 +16,9 @@ const app = express();
 app.use(Cors);
 app.use(attachSequelize);
 
+// Attach body parser
+app.use(express.json());
+
 // Read all entries from the "routes" directory. Filter out any entry that is not a file.
 const _ROUTES_ROOT = resolve(join(__dirname, './routes/'));
 const queue = readdirSync(_ROUTES_ROOT)
