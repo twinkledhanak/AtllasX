@@ -118,6 +118,7 @@ export const columns: ColumnDef<User>[] = [
   {
     id: "address",
     header: "Address",
+    enableResizing: false,
     cell: ({ row }) => {
       const fullAddress = row.original.address
   
@@ -163,16 +164,44 @@ export const columns: ColumnDef<User>[] = [
 
   // ADMIN NOTES (truncated)
   {
-    accessorKey: "adminNotes",
+    id: "adminNotes",
     header: "Notes",
-    cell: ({ row }) => (
-      <span className="text-muted-foreground line-clamp-1 max-w-[200px]">
-        {row.original.adminNotes}
-      </span>
-    ),
-    size: 200,
-    minSize: 150,
-    maxSize: 300,
+    enableResizing: false,
+    cell: ({ row }) => {
+      const notes = row.original.adminNotes
+  
+      if (!notes || notes.trim() === "") {
+        return (
+          <div className="flex items-start justify-between w-full">
+            <span className="text-muted-foreground italic">
+              No notes
+            </span>
+          </div>
+        )
+      }
+  
+      const shortNotes =
+        notes.length > 20 ? notes.slice(0, 20) + "..." : notes
+  
+      return (
+        <div className="flex items-start justify-between w-full">
+          {/* LEFT: allow wrapping */}
+          <span className="text-muted-foreground break-words whitespace-normal">
+            {shortNotes}
+          </span>
+  
+          {/* RIGHT: copy icon */}
+          <button
+            type="button"
+            onClick={() => navigator.clipboard.writeText(notes)}
+            className="p-1 rounded hover:bg-muted transition-colors cursor-pointer"
+            title="Copy full notes"
+          >
+            📝
+          </button>
+        </div>
+      )
+    },
   },
 
   // REGISTERED DATE
@@ -181,14 +210,15 @@ export const columns: ColumnDef<User>[] = [
     header: "Registered",
     cell: ({ row }) => {
       const date = new Date(row.original.registered)
-      return (
-        <span className="text-sm">
-          {date.toLocaleDateString()}
-        </span>
-      )
+      const formatted = date.toLocaleString("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+      return <span className="text-sm">{formatted}</span>
     },
-    size: 120,
-  },
+  }
+  ,
 
   // CREATED AT
   {
@@ -196,11 +226,12 @@ export const columns: ColumnDef<User>[] = [
     header: "Created",
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt)
-      return (
-        <span className="text-sm text-muted-foreground">
-          {date.toLocaleDateString()}
-        </span>
-      )
+      const formatted = date.toLocaleString("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+      return <span className="text-sm">{formatted}</span>
     },
     size: 120,
   },
@@ -208,14 +239,15 @@ export const columns: ColumnDef<User>[] = [
   // UPDATED AT
   {
     accessorKey: "updatedAt",
-    header: "Updated",
+    header: "Last Updated on",
     cell: ({ row }) => {
       const date = new Date(row.original.updatedAt)
-      return (
-        <span className="text-sm text-muted-foreground">
-          {date.toLocaleDateString()}
-        </span>
-      )
+      const formatted = date.toLocaleString("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+      return <span className="text-sm">{formatted}</span>
     },
     size: 120,
   },
@@ -228,6 +260,5 @@ export const visibleColumns: string[] = [
   "address",
   "adminNotes",
   "registered",
-  "createdAt",
   "updatedAt",
 ]
