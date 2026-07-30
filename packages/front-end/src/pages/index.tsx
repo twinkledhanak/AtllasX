@@ -6,7 +6,9 @@ import { populateUsers } from "@/hooks/populateUsers";
 import { detectDevice } from "@/hooks/detectDevice";
 
 import { UserCard } from "@/components/UserCard";
-import { UserTable } from "@/components/UserTable";
+import { DataTable } from "@/components/data-table/data-table"
+import { columns } from "@/components/data-table/columns"
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,7 +42,7 @@ export default function Home() {
               </div>
             ) : (
               <div className="mt-4">
-                <UserTable users={users} />
+                <DataTable columns={columns} data={users} /> 
               </div>
             )}
           </>
