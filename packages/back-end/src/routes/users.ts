@@ -47,7 +47,8 @@ const UsersRouter: IRoute = {
           });
       });
 
-      router.patch('/:id', async (req, res, next) => {
+      router.route('/:id')
+      .patch(async (req, res, next) => {
         const updateData = UpdateUserRequest.safeParse(req.body);
   
         if (!updateData.success) {
@@ -70,7 +71,24 @@ const UsersRouter: IRoute = {
           console.error('Failed to update user.', err);
           next(new AppError('Failed to update user', 500, err));
         }
-      });  
+      })
+      .delete(async (req, res, next) => {
+        try {
+          const user = await User.findByPk(req.params.id);
+
+          if (!user) {
+            return next(new AppError('User not found', 404));
+          }
+
+          await user.destroy();
+          return res.json({ 
+            success: true, data: user 
+          });
+        } catch (err) {
+          console.error('Failed to delete user.', err);
+          next(new AppError('Failed to delete user', 500, err));
+        }
+      });
 
     return router;
   },
