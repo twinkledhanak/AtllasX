@@ -26,9 +26,17 @@ const UsersRouter: IRoute = {
           });
       })
       .post(async (req, res) => {
-        const userData = CreateUserRequest.parse(req.body);
+        const userData = CreateUserRequest.safeParse(req.body);
         console.log('userData', userData);
-        return User.create(userData)
+
+        if (!userData.success) {
+          return res.status(400).json({
+            success: false,
+            errors: userData.error.flatten(),
+          });
+        }
+
+        return User.create(userData.data)
           .then(user => {
             return res.json({
               success: true,
