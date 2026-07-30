@@ -3,7 +3,10 @@
     "strict": false,
     "target": "ESNext",
     "module": "CommonJS",
-
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "esModuleInterop": true,
     "allowJs": false,
     "skipLibCheck": true,
