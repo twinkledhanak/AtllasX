@@ -43,14 +43,38 @@ const UsersRouter: IRoute = {
           })
           .catch(err => {
             console.error('Failed to create user.', err);
-            res.status(500).json({
-              success: false,
-            });
+            next(new AppError('Failed to create user', 500, err));
           });
       });
 
+      router.patch('/:id', async (req, res, next) => {
+        const updateData = UpdateUserRequest.safeParse(req.body);
+  
+        if (!updateData.success) {
+          return next(new AppError('Validation failed', 400, updateData.error.flatten()));
+        }
+  
+        try {
+          const user = await User.findByPk(req.params.id);
+  
+          if (!user) {
+            return next(new AppError('User not found', 404));
+          }
+  
+          await user.update(updateData.data);
+          return res.json({
+            success: true,
+            data: user,
+          });
+        } catch (err) {
+          console.error('Failed to update user.', err);
+          next(new AppError('Failed to update user', 500, err));
+        }
+      });  
+
     return router;
   },
+  
 };
 
 export default UsersRouter;
