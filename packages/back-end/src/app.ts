@@ -5,6 +5,7 @@ import { attachSequelize } from './middleware/db';
 import { errorHandler } from './middleware/errorHandler';
 import Cors from './middleware/cors'
 import IRoute from './types/IRoute';
+import { requestElapsedTime } from './middleware/metricsHandler';
 
 const appCfg = {
   port: parseInt(process.env.EXPRESS_PORT) || 50000,
@@ -19,6 +20,9 @@ app.use(attachSequelize);
 
 // Attach body parser
 app.use(express.json());
+
+// Attach custom metrics handler for backend api performance
+app.use(requestElapsedTime);
 
 // Read all entries from the "routes" directory. Filter out any entry that is not a file.
 const _ROUTES_ROOT = resolve(join(__dirname, './routes/'));
