@@ -6,6 +6,7 @@ export type User = {
   middleName?: string
   lastName: string
   phoneNumber: string
+  email: string
   address: string
   adminNotes: string
   registered: string
@@ -81,16 +82,28 @@ export const columns: ColumnDef<User>[] = [
     ),
     size: 140,
   },
-
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => (
+      <span className="font-mono text-sm text-muted-foreground whitespace-normal break-words max-w-[200px]">
+        {row.original.email}
+      </span>
+    ),
+    size: 200,
+    minSize: 150,
+    maxSize: 300,
+  },
+  
   // ADDRESS
   {
     accessorKey: "address",
     header: "Address",
     cell: ({ row }) => (
-      <span className="text-muted-foreground break-words">
+      <span className="text-muted-foreground whitespace-normal break-words max-w-[240px]">
         {row.original.address}
       </span>
-    ),
+    ),    
     size: 240,
   },
 
