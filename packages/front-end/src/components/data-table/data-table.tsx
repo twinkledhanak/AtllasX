@@ -30,24 +30,31 @@ export function DataTable({ columns, data }) {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     manualSorting: true, // enables server-side sorting later
+    enableColumnResizing: true,
+    columnResizeMode: "onChange",
   })
 
   return (
-    <div className="rounded-lg border bg-card shadow-sm">
+    <div className="rounded-lg border bg-card shadow-sm overflow-x-auto">
       <Table>
         <TableHeader className="bg-muted/100">
           {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map(header => (
                 <TableHead
-                  key={header.id}
-                  className="text-sm font-semibold text-muted-foreground"
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </TableHead>
+                key={header.id}
+                className="relative text-sm font-semibold text-muted-foreground"
+                style={{ width: header.getSize() }}
+              >
+                {flexRender(header.column.columnDef.header, header.getContext())}
+              
+                {/* Resize handle */}
+                <div
+                  onMouseDown={header.getResizeHandler()}
+                  onTouchStart={header.getResizeHandler()}
+                  className="absolute right-0 top-0 h-full w-1 cursor-col-resize select-none"
+                />
+              </TableHead>
               ))}
             </TableRow>
           ))}
