@@ -75,7 +75,7 @@ export function UserTable({ users }) {
   });
 
   return (
-    <div className="rounded-lg border bg-card shadow-sm">
+    <div className="rounded-lg border bg-card shadow-sm"> 
       <Table>
         <TableHeader className="bg-muted/100">
           {table.getHeaderGroups().map(headerGroup => (
