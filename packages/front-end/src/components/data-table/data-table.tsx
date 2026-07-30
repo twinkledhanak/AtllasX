@@ -67,7 +67,7 @@ export function DataTable({ columns, data }) {
                 <div
                   onMouseDown={header.getResizeHandler()}
                   onTouchStart={header.getResizeHandler()}
-                  className="absolute right-0 top-0 h-full w-1 cursor-col-resize select-none"
+                  className="absolute right-0 top-0 h-full w-1 bg-border cursor-col-resize select-none"
                 />
               </TableHead>
               ))}

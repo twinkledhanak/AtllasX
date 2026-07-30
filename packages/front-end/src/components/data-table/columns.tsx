@@ -1,5 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
+import { Mail, Phone, MapPin, ClipboardCopy } from "lucide-react"
+
 
 export type User = {
   firstName: string
@@ -66,7 +68,7 @@ export const columns: ColumnDef<User>[] = [
             className="p-1 rounded hover:bg-muted transition-colors cursor-pointer"
             title="Copy email"
           >
-            📧
+            <Mail className="h-5 w-5 text-blue-600" />
           </button>
   
           {/* Phone Icon */}
@@ -76,7 +78,7 @@ export const columns: ColumnDef<User>[] = [
             className="p-1 rounded hover:bg-muted transition-colors cursor-pointer"
             title="Copy phone"
           >
-            📱
+            <Phone className="h-5 w-5 text-green-600" />
           </button>
         </div>
       )
@@ -152,7 +154,7 @@ export const columns: ColumnDef<User>[] = [
             className="p-1 rounded hover:bg-muted transition-colors cursor-pointer"
             title="Copy full address"
           >
-            📍
+            <MapPin className="h-5 w-5 text-red-600" />
           </button>
         </div>
       )
@@ -197,7 +199,7 @@ export const columns: ColumnDef<User>[] = [
             className="p-1 rounded hover:bg-muted transition-colors cursor-pointer"
             title="Copy full notes"
           >
-            📝
+            <ClipboardCopy className="h-5 w-5 text-purple-600" />
           </button>
         </div>
       )
