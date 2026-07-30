@@ -2,6 +2,7 @@ import express from 'express';
 import { readdirSync, statSync } from 'fs';
 import { join, resolve } from 'path';
 import { attachSequelize } from './middleware/db';
+import { errorHandler } from './middleware/errorHandler';
 import Cors from './middleware/cors'
 import IRoute from './types/IRoute';
 
@@ -53,3 +54,6 @@ function isFile(path: string): boolean {
     return false;
   }
 }
+
+// Attach error handler
+app.use(errorHandler);

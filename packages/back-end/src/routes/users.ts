@@ -2,6 +2,7 @@ import { Router } from 'express';
 import IRoute from '../types/IRoute';
 import { User } from '../services/db';
 import { CreateUserRequest, UpdateUserRequest } from '../requests/user.request';
+import { AppError } from '../utils/AppError';
 
 const UsersRouter: IRoute = {
   route: '/users', // This is just the mount point, app.use('/users', UsersRouter.router());
@@ -25,15 +26,12 @@ const UsersRouter: IRoute = {
             });
           });
       })
-      .post(async (req, res) => {
+      .post(async (req, res, next) => {
         const userData = CreateUserRequest.safeParse(req.body);
         console.log('userData', userData);
 
         if (!userData.success) {
-          return res.status(400).json({
-            success: false,
-            errors: userData.error.flatten(),
-          });
+          return next(new AppError('Validation failed', 400, userData.error.flatten()));
         }
 
         return User.create(userData.data)
