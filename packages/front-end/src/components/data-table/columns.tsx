@@ -3,6 +3,18 @@ import { Button } from "@/components/ui/button"
 import { Mail, Phone, MapPin, ClipboardCopy } from "lucide-react"
 import { Pencil, Trash2 } from "lucide-react"
 
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog"
+
 export type User = {
   id: string
   firstName: string
@@ -302,16 +314,37 @@ export const columns = (onDelete: (id: string) => void): ColumnDef<User>[] => [
           <Pencil className="h-5 w-5 text-blue-600" />
         </button>
 
-        {/* Delete */}
-        <button
-        type="button"
-        onClick={() => onDelete(data.id)}
-        className="p-1 rounded hover:bg-muted transition-colors"
-        title="Delete"
-      >
-        <Trash2 className="h-5 w-5 text-red-600" />
-      </button>
+        <AlertDialog>
+  <AlertDialogTrigger>
+    <button
+      type="button"
+      className="p-1 rounded hover:bg-muted transition-colors"
+      title="Delete"
+    >
+      <Trash2 className="h-5 w-5 text-red-600" />
+    </button>
+  </AlertDialogTrigger>
 
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Delete User</AlertDialogTitle>
+      <AlertDialogDescription>
+        Are you sure you want to delete this user? This action cannot be undone.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+      <AlertDialogAction
+        onClick={() => onDelete(data.id)}
+        className="bg-red-600 text-white hover:bg-red-700"
+      >
+        Delete
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
 
       </div>
     )
