@@ -4,6 +4,7 @@ import { Mail, Phone, MapPin, ClipboardCopy } from "lucide-react"
 import { Pencil, Trash2 } from "lucide-react"
 
 export type User = {
+  id: string
   firstName: string
   middleName?: string
   lastName: string
@@ -279,7 +280,11 @@ export const columns: ColumnDef<User>[] = [
         {/* Copy */}
         <button
           type="button"
-          onClick={() => navigator.clipboard.writeText(JSON.stringify(data))}
+          onClick={() => {
+            const { id, ...rest } = data
+            navigator.clipboard.writeText(JSON.stringify(rest, null, 2))
+            }
+          }
           className="p-1 rounded hover:bg-muted transition-colors"
           title="Copy row"
         >
