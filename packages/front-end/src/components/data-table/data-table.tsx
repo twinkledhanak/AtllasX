@@ -23,7 +23,9 @@ import {
 import { visibleColumns } from "./columns"
 import { PaginationControls } from "./pagination-controls"
 
-export function DataTable({ columns, data }) {
+import { useRouter } from "next/navigation"
+
+export function DataTable({ columns, data }) {  
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = useState({})
   const [pagination, setPagination] = useState({
@@ -32,9 +34,27 @@ export function DataTable({ columns, data }) {
   })
   const [hydrated, setHydrated] = useState(false) // To fix the 2 second delay on table load
 
+  const router = useRouter();
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`http://localhost:50000/users/${id}`, {
+        method: "DELETE",
+      })
+
+      if (!res.ok) {
+        console.error("Failed to delete user")
+        return
+      }
+
+      router.refresh()
+    } catch (err) {
+      console.error("Error deleting user:", err)
+    }
+  }
+
   const table = useReactTable({
     data,
-    columns,
+    columns: columns(handleDelete),
     state: { sorting, columnVisibility, pagination,},
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
