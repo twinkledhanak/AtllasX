@@ -22,12 +22,14 @@ import {
 
 import { visibleColumns } from "./columns"
 import { PaginationControls } from "./pagination-controls"
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 
 import { useRouter } from "next/navigation"
 
 export function DataTable({ columns, data }) {  
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = useState({})
+  const [deleteMessage, setDeleteMessage] = useState<string | null>(null)
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -40,17 +42,22 @@ export function DataTable({ columns, data }) {
       const res = await fetch(`http://localhost:50000/users/${id}`, {
         method: "DELETE",
       })
-
+  
       if (!res.ok) {
-        console.error("Failed to delete user")
+        setDeleteMessage("Failed to delete user.")
+        setTimeout(() => setDeleteMessage(null), 10000)
         return
       }
-
+  
+      setDeleteMessage(`User has been deleted.`)
+      setTimeout(() => setDeleteMessage(null), 10000)
       router.refresh()
     } catch (err) {
-      console.error("Error deleting user:", err)
+      setDeleteMessage("Network error while deleting user.")
+      setTimeout(() => setDeleteMessage(null), 10000)
     }
   }
+  
 
   const table = useReactTable({
     data,
@@ -81,9 +88,19 @@ export function DataTable({ columns, data }) {
     setHydrated(true)
   }, [])
 
+  
+
   if (hydrated) {
   return (
     <div className="rounded-lg border bg-card shadow-sm overflow-x-auto">
+       {deleteMessage && (
+  <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md">
+    <Alert variant="default" className="shadow-lg border border-border bg-white">
+      <AlertTitle className="font-bold">Delete Action</AlertTitle>
+      <AlertDescription>{deleteMessage}</AlertDescription>
+    </Alert>
+  </div>
+)}
       <Table>
         <TableHeader className="bg-muted/100">
           {table.getHeaderGroups().map(headerGroup => (
