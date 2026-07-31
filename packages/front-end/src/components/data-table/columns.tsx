@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { Mail, Phone, MapPin, ClipboardCopy } from "lucide-react"
-
+import { Pencil, Trash2 } from "lucide-react"
 
 export type User = {
   firstName: string
@@ -9,8 +9,8 @@ export type User = {
   lastName: string
   email: string
   phoneNumber: string
-  address: string
-  adminNotes: string
+  address?: string
+  adminNotes?: string
   registered: string
   createdAt: string
   updatedAt: string
@@ -28,7 +28,7 @@ export const columns: ColumnDef<User>[] = [
           column.toggleSorting(column.getIsSorted() === "asc")
         }
       >
-        Full Name
+        FULL NAME
         {column.getIsSorted() === "asc" && " ↑"}
         {column.getIsSorted() === "desc" && " ↓"}
       </Button>
@@ -42,6 +42,7 @@ export const columns: ColumnDef<User>[] = [
         </span>
       )
     },
+    enableSorting: true,
     // Sorting still works using underlying fields
     sortingFn: (a, b) => {
       const nameA = `${a.original.lastName} ${a.original.firstName}`
@@ -54,7 +55,7 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     id: "contact",
-    header: "Contact",
+    header: "CONTACT",
     cell: ({ row }) => {
       const email = row.original.email
       const phone = row.original.phoneNumber
@@ -91,7 +92,7 @@ export const columns: ColumnDef<User>[] = [
   // EMAIL
   {
     accessorKey: "email",
-    header: "Email",
+    header: "EMAIL",
     cell: ({ row }) => (
       <span className="font-mono text-sm text-muted-foreground whitespace-normal break-words max-w-[200px]">
         {row.original.email}
@@ -105,21 +106,21 @@ export const columns: ColumnDef<User>[] = [
   // PHONE NUMBER
   {
     accessorKey: "phoneNumber",
-    header: "Phone",
+    header: "PHONE",
     cell: ({ row }) => (
       <span className="font-mono text-sm text-muted-foreground">
         {row.original.phoneNumber}
       </span>
     ),
-    size: 140,
-    minSize: 120,
+    size: 120,
+    minSize: 100,
     maxSize: 200,
   },
 
   // ADDRESS
   {
     id: "address",
-    header: "Address",
+    header: "ADDRESS",
     enableResizing: false,
     cell: ({ row }) => {
       const fullAddress = row.original.address
@@ -129,7 +130,7 @@ export const columns: ColumnDef<User>[] = [
         return (
           <div className="flex items-center justify-between w-full">
             <span className="text-muted-foreground italic">
-              No address
+              None
             </span>
           </div>
         )
@@ -159,15 +160,15 @@ export const columns: ColumnDef<User>[] = [
         </div>
       )
     },
-    size: 240,
-    minSize: 200,
+    size: 210,
+    minSize: 170,
     maxSize: 400,
   },
 
   // ADMIN NOTES (truncated)
   {
     id: "adminNotes",
-    header: "Notes",
+    header: "NOTES",
     enableResizing: false,
     cell: ({ row }) => {
       const notes = row.original.adminNotes
@@ -176,7 +177,7 @@ export const columns: ColumnDef<User>[] = [
         return (
           <div className="flex items-start justify-between w-full">
             <span className="text-muted-foreground italic">
-              No notes
+              None
             </span>
           </div>
         )
@@ -204,19 +205,23 @@ export const columns: ColumnDef<User>[] = [
         </div>
       )
     },
+    size: 160,
   },
 
   // REGISTERED DATE
   {
     accessorKey: "registered",
-    header: "Registered",
+    header: "REGISTERED ON",
     cell: ({ row }) => {
       const date = new Date(row.original.registered)
-      const formatted = date.toLocaleString("en-US", {
+      const formatted = `${date.toLocaleString("en-US", {
         day: "numeric",
-        month: "long",
+        month: "short",
         year: "numeric",
-      })
+      })} • ${date.toLocaleString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`
       return <span className="text-sm">{formatted}</span>
     },
   }
@@ -225,35 +230,88 @@ export const columns: ColumnDef<User>[] = [
   // CREATED AT
   {
     accessorKey: "createdAt",
-    header: "Created",
+    header: "CREATED ON",
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt)
-      const formatted = date.toLocaleString("en-US", {
+      const formatted = `${date.toLocaleString("en-US", {
         day: "numeric",
-        month: "long",
+        month: "short",
         year: "numeric",
-      })
+      })} • ${date.toLocaleString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`
       return <span className="text-sm">{formatted}</span>
     },
-    size: 120,
+    size: 140,
   },
 
   // UPDATED AT
   {
     accessorKey: "updatedAt",
-    header: "Last Updated on",
+    header: "LAST UPDATED ON",
     cell: ({ row }) => {
       const date = new Date(row.original.updatedAt)
-      const formatted = date.toLocaleString("en-US", {
+      const formatted = `${date.toLocaleString("en-US", {
         day: "numeric",
-        month: "long",
+        month: "short",
         year: "numeric",
-      })
+      })} • ${date.toLocaleString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`
       return <span className="text-sm">{formatted}</span>
     },
-    size: 120,
+    size: 140,
   },
+  {
+  id: "actions",
+  header: "ACTIONS",
+  enableResizing: false,
+  size: 110,
+  minSize: 100,
+  cell: ({ row }) => {
+    const data = row.original
+
+    return (
+      <div className="flex items-center gap-2 justify-end w-full">
+
+        {/* Copy */}
+        <button
+          type="button"
+          onClick={() => navigator.clipboard.writeText(JSON.stringify(data))}
+          className="p-1 rounded hover:bg-muted transition-colors"
+          title="Copy row"
+        >
+          <ClipboardCopy className="h-5 w-5 text-purple-600" />
+        </button>
+
+        {/* Edit */}
+        <button
+          type="button"
+          onClick={() => console.log("Edit", data)}
+          className="p-1 rounded hover:bg-muted transition-colors"
+          title="Edit"
+        >
+          <Pencil className="h-5 w-5 text-blue-600" />
+        </button>
+
+        {/* Delete */}
+        <button
+          type="button"
+          onClick={() => console.log("Delete", data)}
+          className="p-1 rounded hover:bg-muted transition-colors"
+          title="Delete"
+        >
+          <Trash2 className="h-5 w-5 text-red-600" />
+        </button>
+
+      </div>
+    )
+  },
+  }
 ]
+
 
 
 export const visibleColumns: string[] = [
@@ -263,4 +321,5 @@ export const visibleColumns: string[] = [
   "adminNotes",
   "registered",
   "updatedAt",
+  "actions"
 ]
