@@ -17,7 +17,8 @@ export type User = {
   updatedAt: string
 }
 
-export const columns: ColumnDef<User>[] = [
+export const columns = (onDelete: (id: string) => void): ColumnDef<User>[] => [
+
   // DISPLAY-ONLY FULL NAME COLUMN
   {
     id: "fullName",
@@ -303,13 +304,14 @@ export const columns: ColumnDef<User>[] = [
 
         {/* Delete */}
         <button
-          type="button"
-          onClick={() => console.log("Delete", data)}
-          className="p-1 rounded hover:bg-muted transition-colors"
-          title="Delete"
-        >
-          <Trash2 className="h-5 w-5 text-red-600" />
-        </button>
+        type="button"
+        onClick={() => onDelete(data.id)}
+        className="p-1 rounded hover:bg-muted transition-colors"
+        title="Delete"
+      >
+        <Trash2 className="h-5 w-5 text-red-600" />
+      </button>
+
 
       </div>
     )
