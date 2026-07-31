@@ -24,6 +24,7 @@ import { visibleColumns } from "./columns"
 export function DataTable({ columns, data }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = useState({})
+  const [hydrated, setHydrated] = useState(false) // To fix the 2 second delay on table load
 
   const table = useReactTable({
     data,
@@ -47,8 +48,11 @@ export function DataTable({ columns, data }) {
     setColumnVisibility(visibilityState)
   }, [table])
   
-  
+  useEffect(() => {
+    setHydrated(true)
+  }, [])
 
+  if (hydrated) {
   return (
     <div className="rounded-lg border bg-card shadow-sm overflow-x-auto">
       <Table>
@@ -58,7 +62,7 @@ export function DataTable({ columns, data }) {
               {headerGroup.headers.map(header => (
                 <TableHead
                 key={header.id}
-                className="relative text-sm font-semibold text-muted-foreground"
+                className="text-xs font-medium text-muted-foreground tracking-wide"
                 style={{ width: header.getSize() }}
               >
                 {flexRender(header.column.columnDef.header, header.getContext())}
@@ -82,7 +86,7 @@ export function DataTable({ columns, data }) {
               className="hover:bg-muted/30 transition-colors"
             >
               {row.getVisibleCells().map(cell => (
-                <TableCell key={cell.id} className="py-3">
+                <TableCell key={cell.id} className="text-sm text-muted-foreground leading-tight">
                   {flexRender(
                     cell.column.columnDef.cell,
                     cell.getContext()
@@ -95,4 +99,5 @@ export function DataTable({ columns, data }) {
       </Table>
     </div>
   )
+}
 }
