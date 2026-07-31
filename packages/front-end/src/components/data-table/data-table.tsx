@@ -4,6 +4,7 @@ import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
+  getPaginationRowModel,
   flexRender,
   SortingState,
 } from "@tanstack/react-table"
@@ -20,21 +21,29 @@ import {
 } from "@/components/ui/table"
 
 import { visibleColumns } from "./columns"
+import { PaginationControls } from "./pagination-controls"
 
 export function DataTable({ columns, data }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = useState({})
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
   const [hydrated, setHydrated] = useState(false) // To fix the 2 second delay on table load
 
   const table = useReactTable({
     data,
     columns,
-    state: { sorting, columnVisibility, },
+    state: { sorting, columnVisibility, pagination,},
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    manualSorting: true, // enables server-side sorting later
+    getPaginationRowModel: getPaginationRowModel(),
+    manualSorting: false,   // client-side sorting for now
+    manualPagination: false, // client-side pagination for now
     enableColumnResizing: true,
     columnResizeMode: "onChange",
   })
@@ -97,6 +106,8 @@ export function DataTable({ columns, data }) {
           ))}
         </TableBody>
       </Table>
+
+      <PaginationControls table={table} />
     </div>
   )
 }
