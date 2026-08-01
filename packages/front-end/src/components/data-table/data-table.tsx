@@ -31,6 +31,8 @@ export function DataTable({ columns, data }) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = useState({})
   const [deleteMessage, setDeleteMessage] = useState<string | null>(null)
+  const [addMessage, setAddMessage] = useState<string | null>(null)
+  const [editMessage, setEditMessage] = useState<string | null>(null)
   const [showUserDialog, setShowUserDialog] = useState(false)
   const [editUserData, setEditUserData] = useState(null)
 
@@ -119,7 +121,7 @@ export function DataTable({ columns, data }) {
           </button>
         </div>
   
-        {/* ⭐ Reusable Add/Edit User Dialog */}
+        {/* Reusable Add/Edit User Dialog */}
         <UserForm
           open={showUserDialog}
           onOpenChange={setShowUserDialog}
@@ -131,22 +133,24 @@ export function DataTable({ columns, data }) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
               })
-              setDeleteMessage("User updated successfully")
+              setEditMessage("User updated successfully")
+              setTimeout(() => setEditMessage(null), 10000)
             } else {
               await fetch(`http://localhost:50000/users`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
               })
-              setDeleteMessage("User added successfully")
+              setAddMessage("User added successfully")
+              setTimeout(() => setAddMessage(null), 10000)
             }
   
-            setTimeout(() => setDeleteMessage(null), 3000)
+            
             router.refresh()
           }}
         />
   
-        {/* ⭐ Table container */}
+        {/* Table container */}
         <div className="rounded-lg border bg-card shadow-sm overflow-x-auto">
           <Table>
             <TableHeader className="bg-muted/100">
