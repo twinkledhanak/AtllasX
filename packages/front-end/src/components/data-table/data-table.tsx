@@ -25,7 +25,7 @@ import { PaginationControls } from "./pagination-controls"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 
 import { useRouter } from "next/navigation"
-import UserForm from "../UserForm"
+import UserForm from "../forms/UserForm"
 
 export function DataTable({ columns, data }) {  
   const [sorting, setSorting] = useState<SortingState>([])
