@@ -16,9 +16,6 @@ const UserBaseRequest = z.object({
     phoneNumber: z.string().optional(),
     address: z.string().optional(),
     adminNotes: z.string().default(''),
-    registered: z.coerce.date(),
-    createdAt: z.coerce.date(),
-    updatedAt: z.coerce.date(),
   });
 
 // Create User — all fields required, exactly as base
@@ -46,7 +43,8 @@ export type UpdateUserInput = z.infer<typeof UpdateUserRequest>;
     "updatedAt": "2026-07-30T00:41:08.161Z"
   }
 
-curl -X POST http://127.0.0.1:50000/users \
+  // CURL for Create
+  curl -X POST http://127.0.0.1:50000/users \
   -H "Content-Type: application/json" \
   -d '{
     "firstName": "Twinkle",
@@ -61,5 +59,16 @@ curl -X POST http://127.0.0.1:50000/users \
     "updatedAt": "2026-07-30T00:41:08.161Z"
   }'
 
+  // CURL for Update
+  curl -X PATCH http://localhost:50000/users/1002 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "Twinkle",              
+    "adminNotes": "Updated from CURL"
+  }'
+
+
+  // CURL for Delete
+  curl -X DELETE http://localhost:50000/users/1002
 
   */
