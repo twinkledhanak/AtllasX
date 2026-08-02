@@ -11,65 +11,66 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog"
 
-import { useState, useEffect } from "react"
-import {UserBaseRequest} from "@/validations/user.request"
+import { useState, useEffect, forwardRef } from "react"
+import { UserBaseRequest } from "@/validations/user.request"
 
-export default function UserForm({
-  open,
-  onOpenChange,
-  initialData = null,
-  onSubmit,
-}) {
+interface UserFormProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  initialData?: any
+  onSubmit: (data: any) => void
+}
+
+const UserForm = forwardRef<HTMLDivElement, UserFormProps>(function UserForm(
+  { open, onOpenChange, initialData = null, onSubmit },
+  ref
+) {
   const [firstName, setFirstName] = useState("")
   const [middleName, setMiddleName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [address, setAddress] = useState("")
-  const [adminNotes, setNotes] = useState("")
+  const [adminNotes, setAdminNotes] = useState("")
   const [errors, setErrors] = useState<Record<string, string[]>>({})
 
   // Pre-fill fields when editing
   useEffect(() => {
     if (initialData) {
-      console.log(initialData)
       setFirstName(initialData.firstName || "")
       setMiddleName(initialData.middleName || "")
       setLastName(initialData.lastName || "")
       setEmail(initialData.email || "")
       setPhoneNumber(initialData.phoneNumber || "")
       setAddress(initialData.address || "")
-      setNotes(initialData.adminNotes || "")
+      setAdminNotes(initialData.adminNotes || "")
     }
   }, [initialData])
 
   const handleSubmit = () => {
     const result = UserBaseRequest.safeParse({
       firstName,
-      middleName: middleName || '',
+      middleName: middleName || "",
       lastName,
       email,
-      phoneNumber: phoneNumber || '',
-      address: address || '',
-      adminNotes: adminNotes || '',
-      // Removing all Date() fields here, Express to handle all timestamps.
-      // Different client browsers can have different timestamps and zones.
+      phoneNumber: phoneNumber || "",
+      address: address || "",
+      adminNotes: adminNotes || "",
+      // timestamps handled by backend
     })
 
     if (!result.success) {
       setErrors(result.error.flatten().fieldErrors)
-      console.log("Result after parse:: "+result)
       return
     }
-  
-    // If valid → submit to parent
+
     onSubmit(result.data)
     onOpenChange(false)
   }
-  
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent ref={ref}>
         <AlertDialogHeader>
           <AlertDialogTitle>
             {initialData ? "Edit User" : "Add User"}
@@ -82,17 +83,20 @@ export default function UserForm({
         </AlertDialogHeader>
 
         <div className="space-y-4 mt-4">
+
+          {/* FIRST NAME */}
           <input
             type="text"
-            placeholder="Full Name *"
+            placeholder="First Name *"
             className="w-full border rounded p-2"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
           />
           {errors.firstName && (
-          <p className="text-red-600 text-sm">{errors.firstName[0]}</p>
+            <p className="text-red-600 text-sm">{errors.firstName[0]}</p>
           )}
 
+          {/* MIDDLE NAME */}
           <input
             type="text"
             placeholder="Middle Name"
@@ -100,10 +104,11 @@ export default function UserForm({
             value={middleName}
             onChange={(e) => setMiddleName(e.target.value)}
           />
-          {errors.middlename && (
-          <p className="text-red-600 text-sm">{errors.middleName[0]}</p>
+          {errors.middleName && (
+            <p className="text-red-600 text-sm">{errors.middleName[0]}</p>
           )}
 
+          {/* LAST NAME */}
           <input
             type="text"
             placeholder="Last Name *"
@@ -112,9 +117,10 @@ export default function UserForm({
             onChange={(e) => setLastName(e.target.value)}
           />
           {errors.lastName && (
-          <p className="text-red-600 text-sm">{errors.lastName[0]}</p>
+            <p className="text-red-600 text-sm">{errors.lastName[0]}</p>
           )}
 
+          {/* EMAIL */}
           <input
             type="email"
             placeholder="Email *"
@@ -123,9 +129,10 @@ export default function UserForm({
             onChange={(e) => setEmail(e.target.value)}
           />
           {errors.email && (
-          <p className="text-red-600 text-sm">{errors.email[0]}</p>
+            <p className="text-red-600 text-sm">{errors.email[0]}</p>
           )}
 
+          {/* PHONE NUMBER */}
           <input
             type="text"
             placeholder="Phone Number"
@@ -134,9 +141,10 @@ export default function UserForm({
             onChange={(e) => setPhoneNumber(e.target.value)}
           />
           {errors.phoneNumber && (
-          <p className="text-red-600 text-sm">{errors.phoneNumber[0]}</p>
+            <p className="text-red-600 text-sm">{errors.phoneNumber[0]}</p>
           )}
 
+          {/* ADDRESS */}
           <input
             type="text"
             placeholder="Address"
@@ -145,18 +153,19 @@ export default function UserForm({
             onChange={(e) => setAddress(e.target.value)}
           />
           {errors.address && (
-          <p className="text-red-600 text-sm">{errors.address[0]}</p>
+            <p className="text-red-600 text-sm">{errors.address[0]}</p>
           )}
 
+          {/* ADMIN NOTES */}
           <input
             type="text"
             placeholder="Admin Notes"
             className="w-full border rounded p-2"
             value={adminNotes}
-            onChange={(e) => setNotes(e.target.value)}
+            onChange={(e) => setAdminNotes(e.target.value)}
           />
           {errors.adminNotes && (
-          <p className="text-red-600 text-sm">{errors.adminNotes[0]}</p>
+            <p className="text-red-600 text-sm">{errors.adminNotes[0]}</p>
           )}
 
         </div>
@@ -173,4 +182,6 @@ export default function UserForm({
       </AlertDialogContent>
     </AlertDialog>
   )
-}
+})
+
+export default UserForm
