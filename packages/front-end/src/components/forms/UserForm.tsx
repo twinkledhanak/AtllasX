@@ -52,11 +52,10 @@ export default function UserForm({
       phoneNumber: phoneNumber || '',
       address: address || '',
       notes: notes || '',
-      registeredAt: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date()
+      // Removing all Date() fields here, Express to handle all timestamps.
+      // Different client browsers can have different timestamps and zones.
     })
-  
+
     if (!result.success) {
       setErrors(result.error.flatten().fieldErrors)
       return
