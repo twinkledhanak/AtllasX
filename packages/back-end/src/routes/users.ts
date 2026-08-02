@@ -42,6 +42,9 @@ const UsersRouter: IRoute = {
             });
           })
           .catch(err => {
+            if (err.name === 'SequelizeUniqueConstraintError') {
+              return next(new AppError('A user with this email already exists', 409, err));
+            }
             console.error('Failed to create user.', err);
             next(new AppError('Failed to create user', 500, err));
           });
