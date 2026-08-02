@@ -15,6 +15,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog"
 
+/** @TODO: Add User action: User is getting created with a default value for registered on: */
 export type User = {
   id: string
   firstName: string

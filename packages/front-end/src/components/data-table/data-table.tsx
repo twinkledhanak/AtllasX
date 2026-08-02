@@ -120,6 +120,15 @@ export function DataTable({ columns, data }) {
             </Alert>
           </div>
         )}
+        {/* Floating add alert */}
+        {addMessage && (
+          <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md">
+            <Alert variant="default" className="shadow-lg border border-border bg-white">
+              <AlertTitle className="font-bold">Add Action</AlertTitle>
+              <AlertDescription>{addMessage}</AlertDescription>
+            </Alert>
+          </div>
+        )}
   
         {/* Add User Button OUTSIDE the table container */}
         <div className="flex justify-end mb-4">
