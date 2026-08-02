@@ -174,14 +174,17 @@ export function DataTable({ columns, data }) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
               })
-              setAddMessage("User added successfully")
-              setTimeout(() => setAddMessage(null), 10000)
+              
               const data = await res.json().catch(() => null)
               console.log("Response body:", data)
 
               if (!res.ok) {
                 console.error("POST failed:", data)
-              }
+                setAddMessage(data?.error || "Failed to add user.")
+              } else {
+                setAddMessage("User added successfully")
+              }              
+              setTimeout(() => setAddMessage(null), 10000)
             }
   
             
