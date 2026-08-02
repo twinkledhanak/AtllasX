@@ -20,11 +20,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { visibleColumns } from "./columns"
+import { User, visibleColumns } from "./columns"
 import { PaginationControls } from "./pagination-controls"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation" // @TODO: Fix this and change to router navigation
 import UserForm from "../forms/UserForm"
 
 export function DataTable({ columns, data }) {  
@@ -64,10 +64,17 @@ export function DataTable({ columns, data }) {
     }
   }
 
+  const handleEdit = async (user: User) => {
+    // This function does not invoke Backend, just to populate the UserForm correctly.
+    setEditUserData(user)
+    console.log("Inside handleEdit: "+user.notes)
+    setShowUserDialog(true)
+  }
+
 
   const table = useReactTable({
     data,
-    columns: columns(handleDelete),
+    columns: columns(handleDelete, handleEdit),
     state: { sorting, columnVisibility, pagination,},
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
@@ -90,9 +97,7 @@ export function DataTable({ columns, data }) {
     setColumnVisibility(visibilityState)
   }, [table])
   
-  useEffect(() => {
-    setHydrated(true)
-  }, [])
+  useEffect(() => {setHydrated(true)}, []) // To fix bug: On loading page, old table columns were visible for a few seconds
 
   if (hydrated) {
     return (
@@ -112,6 +117,7 @@ export function DataTable({ columns, data }) {
         <div className="flex justify-end mb-4">
           <button
             onClick={() => {
+              // Since this is 'add' user call, we pass null for setEditUserData
               setEditUserData(null)
               setShowUserDialog(true)
             }}
@@ -128,10 +134,12 @@ export function DataTable({ columns, data }) {
           initialData={editUserData}
           onSubmit={async (formData) => {
             if (editUserData) {
+              // console.log("Clicked Submit button for edit user")
+              console.log("sending this new data:"+ editUserData)
               await fetch(`http://localhost:50000/users/${editUserData.id}`, {
-                method: "PUT",
+                method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(editUserData),
               })
               setEditMessage("User updated successfully")
               setTimeout(() => setEditMessage(null), 10000)
