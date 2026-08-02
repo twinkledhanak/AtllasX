@@ -24,9 +24,9 @@ export type User = {
   phoneNumber: string
   address?: string
   adminNotes?: string
-  registered: string
-  createdAt: string
-  updatedAt: string
+  registered?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export const columns = (onDelete: (id: string) => void, onEdit: (user: User) => void): 

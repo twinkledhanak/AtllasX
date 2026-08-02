@@ -58,6 +58,7 @@ export default function UserForm({
 
     if (!result.success) {
       setErrors(result.error.flatten().fieldErrors)
+      console.log("Result after parse:: "+result)
       return
     }
   

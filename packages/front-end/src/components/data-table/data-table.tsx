@@ -160,13 +160,19 @@ export function DataTable({ columns, data }) {
                 console.error("PATCH failed:", data)
               }
             } else {
-              await fetch(`http://localhost:50000/users`, {
+              const res = await fetch(`http://localhost:50000/users`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
               })
               setAddMessage("User added successfully")
               setTimeout(() => setAddMessage(null), 10000)
+              const data = await res.json().catch(() => null)
+              console.log("Response body:", data)
+
+              if (!res.ok) {
+                console.error("POST failed:", data)
+              }
             }
   
             
