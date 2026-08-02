@@ -67,7 +67,6 @@ export function DataTable({ columns, data }) {
   const handleEdit = async (user: User) => {
     // This function does not invoke Backend, just to populate the UserForm correctly.
     setEditUserData(user)
-    console.log("Inside handleEdit: "+user.notes)
     setShowUserDialog(true)
   }
 
@@ -134,15 +133,23 @@ export function DataTable({ columns, data }) {
           initialData={editUserData}
           onSubmit={async (formData) => {
             if (editUserData) {
-              // console.log("Clicked Submit button for edit user")
-              console.log("sending this new data:"+ editUserData)
-              await fetch(`http://localhost:50000/users/${editUserData.id}`, {
+              // formData: Only the form fields edited by the user
+              // editUserData: Original raw user data with id
+              //console.log("sending this new data:"+ formData)
+              const res = await fetch(`http://localhost:50000/users/${editUserData.id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(editUserData),
+                body: JSON.stringify(formData),
               })
               setEditMessage("User updated successfully")
               setTimeout(() => setEditMessage(null), 10000)
+              //console.log("Status:", res.status)
+              const data = await res.json().catch(() => null)
+              console.log("Response body:", data)
+
+              if (!res.ok) {
+                console.error("PATCH failed:", data)
+              }
             } else {
               await fetch(`http://localhost:50000/users`, {
                 method: "POST",
