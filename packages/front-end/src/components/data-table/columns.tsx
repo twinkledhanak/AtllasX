@@ -29,7 +29,9 @@ export type User = {
   updatedAt: string
 }
 
-export const columns = (onDelete: (id: string) => void): ColumnDef<User>[] => [
+export const columns = (onDelete: (id: string) => void, onEdit: (user: User) => void): 
+
+ColumnDef<User>[] => [
 
   // DISPLAY-ONLY FULL NAME COLUMN
   {
@@ -307,7 +309,9 @@ export const columns = (onDelete: (id: string) => void): ColumnDef<User>[] => [
         {/* Edit */}
         <button
           type="button"
-          onClick={() => console.log("Edit", data)}
+          onClick={() => {
+            onEdit(data); // No need for explicit id field as we already have existing users' Id
+          }}
           className="p-1 rounded hover:bg-muted transition-colors"
           title="Edit"
         >
