@@ -26,7 +26,7 @@ export default function UserForm({
   const [email, setEmail] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [address, setAddress] = useState("")
-  const [notes, setNotes] = useState("")
+  const [adminNotes, setNotes] = useState("")
   const [errors, setErrors] = useState<Record<string, string[]>>({})
 
   // Pre-fill fields when editing
@@ -39,7 +39,7 @@ export default function UserForm({
       setEmail(initialData.email || "")
       setPhoneNumber(initialData.phoneNumber || "")
       setAddress(initialData.address || "")
-      setNotes(initialData.notes || "")
+      setNotes(initialData.adminNotes || "")
     }
   }, [initialData])
 
@@ -51,7 +51,7 @@ export default function UserForm({
       email,
       phoneNumber: phoneNumber || '',
       address: address || '',
-      notes: notes || '',
+      adminNotes: adminNotes || '',
       // Removing all Date() fields here, Express to handle all timestamps.
       // Different client browsers can have different timestamps and zones.
     })
@@ -151,11 +151,11 @@ export default function UserForm({
             type="text"
             placeholder="Admin Notes"
             className="w-full border rounded p-2"
-            value={notes}
+            value={adminNotes}
             onChange={(e) => setNotes(e.target.value)}
           />
-          {errors.notes && (
-          <p className="text-red-600 text-sm">{errors.notes[0]}</p>
+          {errors.adminNotes && (
+          <p className="text-red-600 text-sm">{errors.adminNotes[0]}</p>
           )}
 
         </div>

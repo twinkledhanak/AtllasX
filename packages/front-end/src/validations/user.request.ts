@@ -7,7 +7,7 @@ export const UserBaseRequest = z.object({
   email: z.email("Invalid email format").trim(),
   phoneNumber: z.string().optional(),
   address: z.string().optional(),
-  notes: z.string().optional(),
+  adminNotes: z.string().optional(),
   // Removing all Date() fields here, Express to handle all timestamps.
   // Different client browsers can have different timestamps and zones.
 })
