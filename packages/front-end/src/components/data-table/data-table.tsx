@@ -95,7 +95,18 @@ export function DataTable({ columns, data }) {
   
     setColumnVisibility(visibilityState)
   }, [table])
-  
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filtered = data.filter((user) => {
+    const q = searchQuery.toLowerCase();
+    return (
+      user.firstName.toLowerCase().includes(q) ||
+      user.lastName.toLowerCase().includes(q) ||
+      user.email.toLowerCase().includes(q)
+    );
+  });
+
   useEffect(() => {setHydrated(true)}, []) // To fix bug: On loading page, old table columns were visible for a few seconds
 
   if (hydrated) {
@@ -129,16 +140,36 @@ export function DataTable({ columns, data }) {
             </Alert>
           </div>
         )}
-  
+
+
+        {/* Toolbar */}
+        <div className="flex items-center justify-between mb-4">
+
+        {/* Search Box */}
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Search User by Name or Email..."
+            className="border rounded p-2 w-128"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+
+          <button
+            className="border rounded p-2 w-50  bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+          >
+          🔍 Find Users
+          </button>
+        </div>
+
         {/* Add User Button OUTSIDE the table container */}
-        <div className="flex justify-end mb-4">
           <button
             onClick={() => {
               // Since this is 'add' user call, we pass null for setEditUserData
               setEditUserData(null)
               setShowUserDialog(true)
             }}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+            className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition"
           >
             + Add New User
           </button>
