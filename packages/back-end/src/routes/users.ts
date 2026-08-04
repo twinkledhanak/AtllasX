@@ -3,6 +3,7 @@ import IRoute from '../types/IRoute';
 import { User } from '../services/db';
 import { CreateUserRequest, UpdateUserRequest } from '../requests/user.request';
 import { AppError } from '../utils/AppError';
+import { Op } from "sequelize";
 
 const UsersRouter: IRoute = {
   route: '/users', // This is just the mount point, app.use('/users', UsersRouter.router());
@@ -12,20 +13,43 @@ const UsersRouter: IRoute = {
     router.route('/')
       // Fetch all users
       .get(async (req, res) => {
-        return User.findAll() // This will return a Promise that is handled by the .then() and .catch() blocks.
-          .then(users => {
-            return res.json({
-              success: true,
-              data: users,
-            });
-          })
-          .catch(err => {
-            console.error('Failed to list all users.', err);
-            res.status(500).json({
-              success: false,
-            });
+        try {
+          const page = parseInt(req.query.page as string) || 0;
+          const pageSize = parseInt(req.query.pageSize as string) || 10;
+          const search = (req.query.search as string) || "";
+      
+          // Build WHERE clause for search
+          const where = search
+            ? {
+                [Op.or]: [
+                  { firstName: { [Op.like]: `%${search}%` } },
+                  { middleName: { [Op.like]: `%${search}%` } },
+                  { lastName: { [Op.like]: `%${search}%` } },
+                  { email: { [Op.like]: `%${search}%` } },
+                ],
+              }
+            : {};
+                
+          // Use findAndCountAll for pagination + total count
+          const users = await User.findAndCountAll({
+            where,
+            limit: pageSize,
+            offset: page * pageSize,
           });
-      })
+      
+          return res.json({
+            success: true,
+            data: users.rows,   // current page
+            total: users.count, // total matching users
+          });
+        } catch (err) {
+          console.error("Failed to fetch paginated users.", err);
+          return res.status(500).json({
+            success: false,
+            error: "Failed to fetch users",
+          });
+        }
+      })      
       .post(async (req, res, next) => {
         const userData = CreateUserRequest.safeParse(req.body);
         console.log('userData', userData);
