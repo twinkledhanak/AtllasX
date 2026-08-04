@@ -33,9 +33,10 @@ export function DataTable({
   setPagination,
   localSearch,
   setSearchQuery,
-  setLocalSearch
+  setLocalSearch,
+  sorting,
+  setSorting,
 }) {
-  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [deleteMessage, setDeleteMessage] = useState<string | null>(null);
   const [addMessage, setAddMessage] = useState<string | null>(null);
