@@ -3,13 +3,16 @@ import IRoute from '../types/IRoute';
 import { User } from '../services/db';
 import { CreateUserRequest, UpdateUserRequest } from '../requests/user.request';
 import { AppError } from '../utils/AppError';
-import { Op, Sequelize } from "sequelize";
+import { Op, Sequelize, Order } from "sequelize";
 
 // UI Display Column <-> Actual Database column
 const SORT_MAP: Record<string, string> = {
   fullName: "firstName",   
   firstName: "firstName",
+  registeredAt: "registered",
+  updatedAt: "updatedAt"
 };
+const DATE_COLUMNS = new Set(["registered", "updatedAt"]);
 
 
 const UsersRouter: IRoute = {
@@ -48,16 +51,22 @@ const UsersRouter: IRoute = {
             }
           : {};
 
-            const requestedSort = typeof req.query.sort === "string" ? req.query.sort : "firstName";
-            const sort = SORT_MAP[requestedSort] || "firstName";
-            const direction = typeof req.query.direction === "string" && req.query.direction === "desc"? "DESC": "ASC";
+          const rawSort = Array.isArray(req.query.sort)? req.query.sort[0]: req.query.sort;
+          const requestedSort = typeof rawSort === "string" && rawSort.trim() !== ""? rawSort: "firstName";  
+          const sort = SORT_MAP[requestedSort] || "firstName";
+          const direction = typeof req.query.direction === "string" && req.query.direction === "desc"? "DESC": "ASC";
 
+          const isDateColumn = DATE_COLUMNS.has(sort);
+          // Depending on whether we have to sort FullName column OR any of the dates column
+          // registered and updatedAt wont require LOWER
+          const order: Order = isDateColumn? [[sort, direction]]:[[Sequelize.fn("LOWER", Sequelize.col(sort)),
+              direction]];
           // Use findAndCountAll for pagination + total count
           const users = await User.findAndCountAll({
             where,
             limit: pageSize,
             offset: page * pageSize,
-            order: [[Sequelize.fn("LOWER", Sequelize.col(sort)), direction]],
+            order,
           });
       
           return res.json({

@@ -222,7 +222,16 @@ ColumnDef<User>[] => [
   // REGISTERED DATE
   {
     accessorKey: "registered",
-    header: "REGISTERED ON",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        REGISTERED ON
+        {column.getIsSorted() === "asc" && " ↑"}
+        {column.getIsSorted() === "desc" && " ↓"}
+      </Button>
+    ),
     cell: ({ row }) => {
       const date = new Date(row.original.registered)
       const formatted = `${date.toLocaleString("en-US", {
@@ -235,6 +244,7 @@ ColumnDef<User>[] => [
       })}`
       return <span className="text-sm">{formatted}</span>
     },
+    enableSorting: true,
   }
   ,
 
@@ -260,7 +270,16 @@ ColumnDef<User>[] => [
   // UPDATED AT
   {
     accessorKey: "updatedAt",
-    header: "LAST UPDATED ON",
+    header:({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        LAST UPDATED ON
+        {column.getIsSorted() === "asc" && " ↑"}
+        {column.getIsSorted() === "desc" && " ↓"}
+      </Button>
+    ),
     cell: ({ row }) => {
       const date = new Date(row.original.updatedAt)
       const formatted = `${date.toLocaleString("en-US", {
@@ -274,6 +293,7 @@ ColumnDef<User>[] => [
       return <span className="text-sm">{formatted}</span>
     },
     size: 140,
+    enableSorting: true,
   },
   {
   id: "actions",
