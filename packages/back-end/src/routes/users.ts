@@ -57,7 +57,7 @@ const UsersRouter: IRoute = {
             where,
             limit: pageSize,
             offset: page * pageSize,
-            order: [[sort, direction]],
+            order: [[Sequelize.fn("LOWER", Sequelize.col(sort)), direction]],
           });
       
           return res.json({
