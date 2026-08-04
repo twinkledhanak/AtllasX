@@ -5,6 +5,13 @@ import { CreateUserRequest, UpdateUserRequest } from '../requests/user.request';
 import { AppError } from '../utils/AppError';
 import { Op } from "sequelize";
 
+// UI Display Column <-> Actual Database column
+const SORT_MAP: Record<string, string> = {
+  fullName: "firstName",   
+  firstName: "firstName",
+};
+
+
 const UsersRouter: IRoute = {
   route: '/users', // This is just the mount point, app.use('/users', UsersRouter.router());
   router() {
@@ -29,12 +36,17 @@ const UsersRouter: IRoute = {
                 ],
               }
             : {};
-                
+
+            const requestedSort = typeof req.query.sort === "string" ? req.query.sort : "firstName";
+            const sort = SORT_MAP[requestedSort] || "firstName";
+            const direction = typeof req.query.direction === "string" && req.query.direction === "desc"? "DESC": "ASC";
+            
           // Use findAndCountAll for pagination + total count
           const users = await User.findAndCountAll({
             where,
             limit: pageSize,
             offset: page * pageSize,
+            order: [[sort, direction]],
           });
       
           return res.json({
