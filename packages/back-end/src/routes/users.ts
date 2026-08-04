@@ -3,7 +3,7 @@ import IRoute from '../types/IRoute';
 import { User } from '../services/db';
 import { CreateUserRequest, UpdateUserRequest } from '../requests/user.request';
 import { AppError } from '../utils/AppError';
-import { Op } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 
 // UI Display Column <-> Actual Database column
 const SORT_MAP: Record<string, string> = {
@@ -23,24 +23,35 @@ const UsersRouter: IRoute = {
         try {
           const page = parseInt(req.query.page as string) || 0;
           const pageSize = parseInt(req.query.pageSize as string) || 10;
-          const search = (req.query.search as string) || "";
+          const search = (req.query.search as string).toLowerCase() || "";
       
           // Build WHERE clause for search
-          const where = search
-            ? {
-                [Op.or]: [
-                  { firstName: { [Op.like]: `%${search}%` } },
-                  { middleName: { [Op.like]: `%${search}%` } },
-                  { lastName: { [Op.like]: `%${search}%` } },
-                  { email: { [Op.like]: `%${search}%` } },
-                ],
-              }
-            : {};
+          const where = search? {
+              [Op.or]: [
+                Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col("firstName")),
+                  { [Op.like]: `%${search}%` }
+                ),
+                Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col("middleName")),
+                  { [Op.like]: `%${search}%` }
+                ),
+                Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col("lastName")),
+                  { [Op.like]: `%${search}%` }
+                ),
+                Sequelize.where(
+                  Sequelize.fn("LOWER", Sequelize.col("email")),
+                  { [Op.like]: `%${search}%` }
+                ),
+              ],
+            }
+          : {};
 
             const requestedSort = typeof req.query.sort === "string" ? req.query.sort : "firstName";
             const sort = SORT_MAP[requestedSort] || "firstName";
             const direction = typeof req.query.direction === "string" && req.query.direction === "desc"? "DESC": "ASC";
-            
+
           // Use findAndCountAll for pagination + total count
           const users = await User.findAndCountAll({
             where,
