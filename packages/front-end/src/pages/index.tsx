@@ -21,12 +21,14 @@ export default function Home() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [localSearch, setLocalSearch] = useState("");
+  const [sorting, setSorting] = useState([{ id: "firstName", desc: false }]);
 
   // Fetch only the current page from backend
   const { data, total, loading } = populateUsers({
     page: pagination.pageIndex,
     pageSize: pagination.pageSize,
     search: searchQuery,
+    sorting
   });
 
   const isMobile = detectDevice();
@@ -66,6 +68,8 @@ export default function Home() {
                   localSearch={localSearch}
                   setSearchQuery={setSearchQuery}
                   setLocalSearch={setLocalSearch}
+                  sorting={sorting}
+                  setSorting={setSorting}
                 />
               </div>
             )}
