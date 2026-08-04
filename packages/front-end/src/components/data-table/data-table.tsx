@@ -191,7 +191,45 @@ export function DataTable({
         onOpenChange={setShowUserDialog}
         initialData={editUserData}
         onSubmit={async (formData) => {
-          // PATCH or POST logic unchanged
+          if (editUserData) {
+            // formData: Only the form fields edited by the user
+            // editUserData: Original raw user data with id
+            //console.log("sending this new data:"+ formData)
+            const res = await fetch(`http://localhost:50000/users/${editUserData.id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formData),
+            })
+            setEditMessage("User updated successfully")
+            setTimeout(() => setEditMessage(null), 10000)
+            //console.log("Status:", res.status)
+            const data = await res.json().catch(() => null)
+            console.log("Response body:", data)
+
+            if (!res.ok) {
+              console.error("PATCH failed:", data)
+            }
+          } else {
+            const res = await fetch(`http://localhost:50000/users`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formData),
+            })
+            
+            const data = await res.json().catch(() => null)
+            console.log("Response body:", data)
+
+            if (!res.ok) {
+              console.error("POST failed:", data)
+              setAddMessage(data?.error || "Failed to add user.")
+            } else {
+              setAddMessage("User added successfully")
+            }              
+            setTimeout(() => setAddMessage(null), 10000)
+          }
+
+          
+          router.refresh()
         }}
       />
 
