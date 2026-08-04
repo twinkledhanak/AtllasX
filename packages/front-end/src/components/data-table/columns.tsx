@@ -60,12 +60,6 @@ ColumnDef<User>[] => [
       )
     },
     enableSorting: true,
-    // Sorting still works using underlying fields
-    sortingFn: (a, b) => {
-      const nameA = `${a.original.lastName} ${a.original.firstName}`
-      const nameB = `${b.original.lastName} ${b.original.firstName}`
-      return nameA.localeCompare(nameB)
-    },
     size: 200,
     minSize: 150,
     maxSize: 300,
