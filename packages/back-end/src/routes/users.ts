@@ -5,11 +5,11 @@ import { CreateUserRequest, UpdateUserRequest } from '../requests/user.request';
 import { AppError } from '../utils/AppError';
 import { Op, Sequelize, Order } from "sequelize";
 
-// UI Display Column <-> Actual Database column
+// UI Display Column accessor key exact <-> Actual Database column
 const SORT_MAP: Record<string, string> = {
   fullName: "firstName",   
   firstName: "firstName",
-  registeredAt: "registered",
+  registered: "registered",
   updatedAt: "updatedAt"
 };
 const DATE_COLUMNS = new Set(["registered", "updatedAt"]);
@@ -61,6 +61,10 @@ const UsersRouter: IRoute = {
           // registered and updatedAt wont require LOWER
           const order: Order = isDateColumn? [[sort, direction]]:[[Sequelize.fn("LOWER", Sequelize.col(sort)),
               direction]];
+
+          //console.log("requestedSort:", requestedSort)
+          //console.log("sort:", sort)
+                  
           // Use findAndCountAll for pagination + total count
           const users = await User.findAndCountAll({
             where,
