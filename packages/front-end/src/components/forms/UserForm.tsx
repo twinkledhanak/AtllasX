@@ -171,14 +171,21 @@ const UserForm = forwardRef<HTMLDivElement, UserFormProps>(function UserForm(
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            className="bg-blue-600 text-white hover:bg-blue-700"
+          <AlertDialogCancel
+          render={
+            <button className="px-4 py-2 rounded border">Cancel</button>
+          }/>
+
+        <AlertDialogAction
+        render={
+          <button
+            className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded"
             onClick={handleSubmit}
           >
-            {initialData ? "Save Changes" : "Add User"}
-          </AlertDialogAction>
+          {initialData ? "Save Changes" : "Add User"}
+          </button>}/>
         </AlertDialogFooter>
+
       </AlertDialogContent>
     </AlertDialog>
   )
