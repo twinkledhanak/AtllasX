@@ -334,15 +334,17 @@ ColumnDef<User>[] => [
         </button>
 
         <AlertDialog>
-  <AlertDialogTrigger>
-    <button
-      type="button"
-      className="p-1 rounded hover:bg-muted transition-colors"
-      title="Delete"
-    >
-      <Trash2 className="h-5 w-5 text-red-600" />
-    </button>
-  </AlertDialogTrigger>
+        <AlertDialogTrigger
+          render={
+            <button
+              type="button"
+              className="p-1 rounded hover:bg-muted transition-colors"
+              title="Delete"
+            >
+              <Trash2 className="h-5 w-5 text-red-600" />
+            </button>
+          }
+        />
 
   <AlertDialogContent>
     <AlertDialogHeader>
