@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function populateUsers({ page, pageSize, search, sorting}) {
+export function usePopulateUsers({ page, pageSize, search, sorting}) {
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -28,7 +28,7 @@ export function populateUsers({ page, pageSize, search, sorting}) {
     }
 
     load();
-  }, [page, pageSize, search, sorting]); // Fix for desc button toggle not working
+  }, [page, pageSize, search, sorting, sort, direction]); // Fix for desc button toggle not working
 
   return { data, total, loading };
 }

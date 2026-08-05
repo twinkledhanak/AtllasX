@@ -2,8 +2,8 @@ import Head from "next/head";
 import clsx from "clsx";
 import { Inter } from "@next/font/google";
 
-import { populateUsers } from "@/hooks/populateUsers";
-import { detectDevice } from "@/hooks/detectDevice";
+import { usePopulateUsers } from "@/hooks/populateUsers";
+import { useDetectDevice } from "@/hooks/detectDevice";
 
 import { UserCard } from "@/components/UserCard";
 import { DataTable } from "@/components/data-table/data-table";
@@ -24,14 +24,14 @@ export default function Home() {
   const [sorting, setSorting] = useState([{ id: "firstName", desc: false }]);
 
   // Fetch only the current page from backend
-  const { data, total, loading } = populateUsers({
+  const { data, total, loading } = usePopulateUsers({
     page: pagination.pageIndex,
     pageSize: pagination.pageSize,
     search: searchQuery,
     sorting
   });
 
-  const isMobile = detectDevice();
+  const isMobile = useDetectDevice();
 
   return (
     <>
