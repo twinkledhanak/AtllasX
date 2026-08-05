@@ -26,6 +26,7 @@ User.init({
   },
   registered: {
     type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
   },
   firstName: {
     type: DataTypes.STRING,
