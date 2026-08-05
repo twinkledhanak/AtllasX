@@ -355,7 +355,10 @@ ColumnDef<User>[] => [
     </AlertDialogHeader>
 
     <AlertDialogFooter>
-      <AlertDialogCancel>Cancel</AlertDialogCancel>
+    <AlertDialogCancel
+          render={
+            <button className="px-4 py-2 rounded border">Cancel</button>
+          }/>
 
       <AlertDialogAction
         onClick={() => onDelete(data.id)}
